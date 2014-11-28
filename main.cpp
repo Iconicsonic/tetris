@@ -5,13 +5,20 @@
 //  Created by el dou7 wa a3wano on 11/27/14.
 //  Copyright (c) 2014 el dou7 wa a3wano. All rights reserved.
 //
-#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
-#include <OpenGL/OpenGL.h>
+//#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
+//#include <OpenGL/OpenGL.h>
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
 #include <ctime>
 #include <stdlib.h>     /* srand, rand */
 #include <complex>
 #include <iostream>
 #include <stdio.h>
+#include <string>
+using std::string;
 
 /* Global variables */
 double theta  = 0.25*(3.141593f / 180);
@@ -460,7 +467,7 @@ void display() {
     glEnd();  // End of drawing room
     
     sphere(); //ersem el sphere
-    madfa3(); //ersm el madfa3
+    madfa3(); //ersm el madfa3        
     glFlush();
     glLoadIdentity();                  // Reset the model-view matrix
     glutSwapBuffers();  // Swap the front and back frame buffers (double buffering)
@@ -521,7 +528,7 @@ void repeat(void){
 
 void anim(void) {
     SetupLights();
-    glViewport(0, 0, windowWidth, windowHeight);
+    glViewport(0, 0, windowWidth, windowHeight-20);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if(angle > 15 && start){
@@ -618,9 +625,22 @@ void anim(void) {
 	        sphZ += 0.002 + speed;
 	        speed += 0.000005;
     	}
-        
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-        glutPostRedisplay();   
+        glutPostRedisplay();
+        glViewport(0,20,windowWidth,windowHeight);
+        glClearColor(0, 0, 0, 0);
+        glColor3f( 1.0f, 1.0f, 1.0f );
+        glRasterPos2f(6, 5.5);
+        int len;
+        int i;
+        string s = "Score is: ";
+        len = s.size();
+        for (i = 0; i < len; i++) {
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
+        }
+
+
+
     }
 }
 
