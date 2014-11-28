@@ -9,8 +9,9 @@
 #include <OpenGL/OpenGL.h>
 #include <ctime>
 #include <stdlib.h>     /* srand, rand */
-
-
+#include <complex>
+#include <iostream>
+using namespace std;
 
 /* Global variables */
 char title[] = "3D Shapes";
@@ -28,6 +29,8 @@ void drawLeftWall(void);
 double sphX;
 double sphY;
 double sphZ;
+int sign;
+// float epsilon = 0.000000001;
 /* Initialize OpenGL Graphics */
 void initGL() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
@@ -41,9 +44,11 @@ void initGL() {
 /* el sphere el khafeya */
 void sphere(){
 	glPushMatrix();
-	glTranslatef(0.0,5.0,-1);
+	// cout << sphX << " " << sphY << endl;
+	// cout << "x axis " << (-0.5 + sphX) << endl;
+	glTranslatef(-0.5 + sphX, 5.5 + sphY, -0.2 - sphZ);
 	glColor3f(0,0,0);
-	// glScalef(-1.0,-1.0,-1.0);
+	glScalef(0.5, 0.5, 0);
 	glutSolidSphere(0.3,20,20);
 	glPopMatrix();
 }
@@ -57,7 +62,6 @@ void drawLeftWall(){
 			glVertex3f(-6.0f, (float)j+3, (float)i);
 			glVertex3f(-6.0f, (float)j,  (float)i);
 			glVertex3f(-6.0f,  (float)j,  -(float)i-6);
-			
 		}
 	}
 }
@@ -73,29 +77,28 @@ void generateRandom(){
 	}
 }
 
-	
+
+void SetupLights()
+{
+	GLfloat mat_ambient[] = { 0.7f, 0.7f, 0.7, 1.0f };
+	GLfloat mat_diffuse[] = { 0.6f, 0.6f, 0.6, 1.0f };
+	GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0, 1.0f };
+	GLfloat mat_shininess[] = { 50 };
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+	//set the light source properties
+	GLfloat lightIntensity[] = { 0.7f, 0.7f, 1, 1.0f };
+	GLfloat light_position[] = { -7.0f, 6.0f, 3.0f, 0.0f };
+	glLightfv(GL_LIGHT0, GL_POSITION, lightIntensity);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
+}
 
 
 /* Handler for window-repaint event. Called back when the window first appears and
  whenever the window needs to be re-painted. */
 void display() {
-	// glMatrixMode(GL_PROJECTION); // set the view volume shape
-	// glLoadIdentity();
-	// glOrtho(-2.0*64/48.0, 2.0*64/48.0, -2.0, 2.0, 0.1, 100);
-	// glMatrixMode(GL_MODELVIEW); // position and aim the camera
-	// glLoadIdentity();
-	// gluLookAt(2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	// glClear(GL_COLOR_BUFFER_BIT); // clear the screen
-	
-	// // glPushMatrix();
-	// // glTranslated(0.5, 0.5, 0.5); // big cube at (0.5, 0.5, 0.5)
-	// // glutWireCube(1.0);
-	// // glPopMatrix();
-	// glPushMatrix();
-	// glTranslated(0,0,-2); // sphere at (1,1,0)
-	// glutWireSphere(0.25, 10, 10);
-	// glPopMatrix();
-	// glFlush();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
@@ -154,21 +157,9 @@ void display() {
 
 }
 
-void SetupLights()
+bool double_equals(double a, double b, double epsilon = 0.001)
 {
-	GLfloat mat_ambient[] = { 0.7f, 0.7f, 0.7, 1.0f };
-	GLfloat mat_diffuse[] = { 0.6f, 0.6f, 0.6, 1.0f };
-	GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0, 1.0f };
-	GLfloat mat_shininess[] = { 50 };
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	//set the light source properties
-	GLfloat lightIntensity[] = { 0.7f, 0.7f, 1, 1.0f };
-	GLfloat light_position[] = { -7.0f, 6.0f, 3.0f, 0.0f };
-	glLightfv(GL_LIGHT0, GL_POSITION, lightIntensity);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
+    return std::abs(a - b) < epsilon;
 }
 
 /* Handler for window re-size event. Called back when the window first appears and
@@ -187,31 +178,38 @@ void reshape(GLsizei width, GLsizei height) {
 
 void anim(void) {
 	for(int i=0;i<100000000;i++);
+	// sphX += 1;
+	// sphY += 1;
+	
 	SetupLights();
-		glViewport(0, 0, windowWidth, windowHeight);
+	glViewport(0, 0, windowWidth, windowHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if(angle > 20 && start){
-		angle-=3;
-		z-= 1.0f;
+		angle -= 3;
+		z -= 1.0f;
+		sphZ += 0.1;
+		sphY += 0.02;
+		if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
+			sign *= -1;
+		}
+		sphX += (sign * 0.3);
 		gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-	glutPostRedisplay();
+		glutPostRedisplay();
 	}
-
 }
 
-void Keyboard(unsigned char key, int x, int y)
-{
-	switch (key)
-	{
+void Keyboard(unsigned char key, int x, int y) {
+	switch (key) {
 		case 's':
-			start = true;
-			break;
-			}
+			start = true; break;
+	}
 }
 
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
+	sphZ = 0;
+	sign = 1;
 	glutInit(&argc, argv);            // Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
 	glutInitWindowSize(680, 350);   // Set the window's initial width & height
