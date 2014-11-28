@@ -29,7 +29,8 @@ void drawLeftWall(void);
 double sphX;
 double sphY;
 double sphZ;
-int sign;
+int signX, signY;
+double speed;
 // float epsilon = 0.000000001;
 /* Initialize OpenGL Graphics */
 void initGL() {
@@ -189,11 +190,20 @@ void anim(void) {
 		angle -= 3;
 		z -= 1.0f;
 		sphZ += 0.1;
-		sphY += 0.02;
-		if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
-			sign *= -1;
+		
+
+		if(5.5 + sphY > 6.5 + speed || 5.5 + sphY < 5 + 1.5*speed) {
+		// if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
+			signY *= -1;
 		}
-		sphX += (sign * 0.3);
+
+		if(-0.5 + sphX > 1 + speed || -0.5 + sphX < (-2 + 1.5*speed)) {
+		// if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
+			signX *= -1;
+		}
+		sphX += (signX * (0.3 + speed));
+		sphY += (signY * (speed + 0.15));
+		speed += 0.004;
 		gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
 		glutPostRedisplay();
 	}
@@ -209,7 +219,7 @@ void Keyboard(unsigned char key, int x, int y) {
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
 	sphZ = 0;
-	sign = 1;
+	signX = signY = 1;
 	glutInit(&argc, argv);            // Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
 	glutInitWindowSize(680, 350);   // Set the window's initial width & height
