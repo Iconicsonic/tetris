@@ -2,8 +2,8 @@
 //  main.cpp
 //  25-2698_25-4602_25-5201_T10_T10_T10
 //
-//  Created by Almgohar on 11/27/14.
-//  Copyright (c) 2014 Almgohar. All rights reserved.
+//  Created by el dou7 wa a3wano on 11/27/14.
+//  Copyright (c) 2014 el dou7 wa a3wano. All rights reserved.
 //
 #include <GL/glew.h>
 #include <GL/glut.h>
