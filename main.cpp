@@ -5,16 +5,12 @@
 //  Created by el dou7 wa a3wano on 11/27/14.
 //  Copyright (c) 2014 el dou7 wa a3wano. All rights reserved.
 //
-#include <GL/glew.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
+#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
+#include <OpenGL/OpenGL.h>
 #include <ctime>
 #include <stdlib.h>     /* srand, rand */
 #include <complex>
 #include <iostream>
-
 
 /* Global variables */
 double theta  = 0.25*(3.141593f / 180);
@@ -24,6 +20,7 @@ double cz = 0.0;
 char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
+bool rotate;
 int windowWidth = 680;
 int windowHeight = 350;
 int left[12][48] = {{1,1,1,2,2,2,3,3,3,4,4,4,
@@ -258,16 +255,22 @@ void initGL() {
 /* el sphere el khafeya */
 void sphere(){
     glPushMatrix();
-    // cout << sphX << " " << sphY << endl;
-    // cout << "x axis " << (-0.5 + sphX) << endl;
-    std::cout << "Z " << (-0.2 - sphZ) << std::endl;
     glTranslatef(6 + sphX, 5.5 + sphY, -0.2 - sphZ);
-    glColor3f(0,0,0);
+    glColor3f(1,0,0);
     glScalef(0.5, 0.5, 0);
-    glutWireSphere(0.2,10,10);
+    glutSolidSphere(0.5,30,30);
     glPopMatrix();
 }
 
+void madfa3() {
+    glPushMatrix();
+    glTranslatef(6 , 5.8, -0.02);
+    glColor3f(1,0.7,0);
+    glScalef(0.5, 0.5, 0);
+    glRotated(45, 1, 0, 0);
+    glutSolidCone(0.25, 1, 30, 30);
+    glPopMatrix();
+}
 
 void drawLeftWall(){
     for(int i = 0; i < 12; i++) {
@@ -415,23 +418,25 @@ void SetupLights()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
 }
 
-/* Handler for window-repaint event. Called back when the window first appears and
- whenever the window needs to be re-painted. */
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
     glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
     
     glLoadIdentity();// Reset the model-view matrix
-    gluLookAt(6.0, 6.0, 0.1, 6.0, 6.0, 0, cx, cy, cz);
-    double tx = cx;
-    double ty = cy;
-    cx = (cosf(theta)*tx) - (sinf(theta)*ty);
-    cy = (sinf(theta)*tx) + (cosf(theta)*ty);
-    
+    if(rotate) {
+        gluLookAt(6.0, 6.0, 0.1, 6.0, 6.0, 0, cx, cy, cz);
+        double tx = cx;
+        double ty = cy;
+        cx = (cosf(theta)*tx) - (sinf(theta)*ty);
+        cy = (sinf(theta)*tx) + (cosf(theta)*ty);
+    } else {
+        gluLookAt(6.0, 6.0, 0.1, 6.0, 6.0, 0, 0, 12, 0);
+    }
     
     glBegin(GL_QUADS);                // Begin drawing the room
     // Back wall (z = -48.0f)
-    glColor3f(1.0f,0.2f, 0.0f);
+    // Back wall (z = -48.0f)
+    glColor3f(1.0f,0.9f, 0.0f);
     glVertex3f( 12.0f, 12.0f,  -48.0f);
     glVertex3f(0.0f, 12.0f,  -48.0f);
     glVertex3f(0.0f, 0.0f, -48.0f);
@@ -445,7 +450,7 @@ void display() {
     glEnd();  // End of drawing room
     
     sphere(); //ersem el sphere
-    
+    madfa3(); //ersm el madfa3
     glFlush();
     glLoadIdentity();                  // Reset the model-view matrix
     glutSwapBuffers();  // Swap the front and back frame buffers (double buffering)
@@ -510,7 +515,11 @@ void Keyboard(unsigned char key, int x, int y)
     {
         case 's':
             start = true;
-            break;  
+            break;
+        case 'r':
+            rotate = true;
+            break;
+
     }
 }
 
