@@ -297,7 +297,7 @@ void drawScore(){
         glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
     }
     glRasterPos2f(6, 20);
-    string keys = "Press 's' to start, 'r' to rotate camera, 'q' to repeat scene.";
+    string keys = "Press 's' to start, 'r' to rotate camera, 'a' to repeat scene.";
     int keyslen = keys.size();
     for (int i = 0; i < keyslen; i++) {
         glutBitmapCharacter(GLUT_BITMAP_9_BY_15, keys[i]);
@@ -676,9 +676,7 @@ void Keyboard(unsigned char key, int x, int y)
 	            divide = 7;
         	}
             break;
-        case 'q':
-            repeatScene = false;
-    }
+        }
 }
 
 
