@@ -236,8 +236,10 @@ void sphere(void);
 double sphX;
 double sphY;
 double sphZ;
-int sign;
-
+int signX, signY;
+double speed;
+// float epsilon = 0.000000001;
+/* Initialize OpenGL Graphics */
 void initGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
     glClearDepth(1.0f);                   // Set background depth to farthest
@@ -460,25 +462,34 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void anim(void) {
-    for(int i=0;i<100000000;i++);
-    // sphX += 1;
-    // sphY += 1;
-    
-    SetupLights();
-    glViewport(0, 0, windowWidth, windowHeight);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    if(angle > 20 && start){
-        angle -= 3;
-        sphZ += 0.1;
-        sphY += 0.02;
-        if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
-            sign *= -1;
-        }
-        sphX += (sign * 0.3);
-        gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-        glutPostRedisplay();
-    }
+	for(int i=0;i<100000000;i++);
+	// sphX += 1;
+	// sphY += 1;
+	
+	SetupLights();
+	glViewport(0, 0, windowWidth, windowHeight);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if(angle > 20 && start){
+		angle -= 3;
+		sphZ += 0.1;
+		
+
+		if(5.5 + sphY > 6.5 + speed || 5.5 + sphY < 5 + 1.5*speed) {
+		// if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
+			signY *= -1;
+		}
+
+		if(-0.5 + sphX > 1 + speed || -0.5 + sphX < (-2 + 1.5*speed)) {
+		// if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
+			signX *= -1;
+		}
+		sphX += (signX * (0.3 + speed));
+		sphY += (signY * (speed + 0.15));
+		speed += 0.004;
+		gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+		glutPostRedisplay();
+	}
 }
 
 void Keyboard(unsigned char key, int x, int y)
@@ -493,24 +504,23 @@ void Keyboard(unsigned char key, int x, int y)
 
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
-    sphZ = 0;
-    sign = 1;
-    
-    glutInit(&argc, argv);            // Initialize GLUT
-    glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
-    glutInitWindowSize(680, 350);   // Set the window's initial width & height
-    glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
-    glutCreateWindow("Bouncing Ball");
-    
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-    glutDisplayFunc(display);
-    glClearColor(1.0f, 1.0f, 1.0f,0.0f); // background is white
-    glutIdleFunc(anim);//callig the anim func
-    glutKeyboardFunc (Keyboard);
-    glutReshapeFunc(reshape);       // Register callback handler for window re-size event
-    initGL();// Our own OpenGL initialization
-    glutMainLoop();                 // Enter the infinite event-processing loop
-    return 0;
+	sphZ = 0;
+	signX = signY = 1;
+	glutInit(&argc, argv);            // Initialize GLUT
+	glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
+	glutInitWindowSize(680, 350);   // Set the window's initial width & height
+	glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
+	glutCreateWindow("Bouncing Ball");
+
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+	glutDisplayFunc(display);
+	glClearColor(1.0f, 1.0f, 1.0f,0.0f); // background is white
+	glutIdleFunc(anim);//callig the anim func
+	glutKeyboardFunc (Keyboard);
+	glutReshapeFunc(reshape);       // Register callback handler for window re-size event
+	initGL();// Our own OpenGL initialization
+	glutMainLoop();                 // Enter the infinite event-processing loop
+	return 0;
 }
