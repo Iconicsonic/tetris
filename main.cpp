@@ -49,7 +49,7 @@ void sphere(){
 	glTranslatef(-0.5 + sphX, 5.5 + sphY, -0.2 - sphZ);
 	glColor3f(0,0,0);
 	glScalef(0.5, 0.5, 0);
-	glutSolidSphere(0.3,20,20);
+	glutWireSphere(0.3,20,20);
 	glPopMatrix();
 }
 
