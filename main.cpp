@@ -29,6 +29,7 @@ char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
 bool repeatScene;
+int divide;
 bool rotate;
 int score = 0;
 int madfa3DirecH = 0;
@@ -534,14 +535,17 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void anim(void) {
-    if(!repeatScene){
+    // if(!repeatScene){
         SetupLights();
         
         glViewport(0, 0, windowWidth, windowHeight);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         if(angle > 15 && start){
-            angle -= 0.17;
+        	if(divide == 1)
+            	angle -= 0.3;
+            else
+            	angle -= 0.1;
         }
         
         if(sphZ > -48 && start) {
@@ -626,44 +630,16 @@ void anim(void) {
                 sX *= -1;
             }
             if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
-                sphX += (sX * (0.04 + speed));
-                sphY += (sY * (speed + 0.07));
-                sphZ += 0.004 + speed;
-                speed += 0.00001;
+                sphX += (sX * (0.085/divide + speed));
+                sphY += (sY * (speed + 0.09/divide));
+                sphZ += 0.008/divide + speed;
+                speed += 0.0001/divide;
+            }else {
+            	repeatScene = true;
             }
             gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
             glutPostRedisplay();
-        } else {
-            sphX = sphY = sphZ = speed = 0;
-            angle = 120;
-            SetupLights();
-            glViewport(0, 0, windowWidth, windowHeight);
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            if(angle > 15 && start){
-                angle -= 0.09;
-            }
-            if(sphZ > -48 && start) {
-                int zPosition = ceil(startingZ - sphZ);
-                double xPosition = startingX + sphX;
-                xPosition *= 10;
-                xPosition /= 2.5;
-                double yPosition = startingY + sphY;
-                yPosition *= 10;
-                yPosition /= 2.5;
-                
-                if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
-                    int div = 8;
-                    sphX += (signX * (0.02/div + speed));
-                    sphY += (signY * (speed + 0.05/div));
-                    sphZ += (0.002 + speed);
-                    speed += 0.0000005;
-                }
-                gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-                glutPostRedisplay();
-            }
-            
-        }
+
     }
 }
 void Keyboard(unsigned char key, int x, int y)
@@ -672,6 +648,7 @@ void Keyboard(unsigned char key, int x, int y)
     {
         case 's':
             start = true;
+            divide = 1;
             break;
         case 'r':
             rotate = true;
@@ -680,7 +657,11 @@ void Keyboard(unsigned char key, int x, int y)
         	printf("Score is: %d\n", score);
             break;
         case 'a':
-            repeatScene = true;
+        	if(repeatScene) {
+	            sphX = sphY = sphZ = speed = 0;
+	            angle = 120;
+	            divide = 7;
+        	}
             break;
         case 'q':
             repeatScene = false;
@@ -698,7 +679,7 @@ void processSpecialKeys(int key, int x, int y) {
                 break;
             case GLUT_KEY_RIGHT :
                 signX = 1;
-                sx = 1;
+                sX = 1;
                 madfa3DirecH = 1;
                 break;
             case GLUT_KEY_UP :
