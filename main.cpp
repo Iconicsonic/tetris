@@ -491,12 +491,12 @@ void anim(void) {
             signX *= -1;
         }
         if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
-            // std:: cout << "printing " << std::endl;
-            sphX += (signX * (0.02 + speed));
-            sphY += (signY * (speed + 0.05));
-            sphZ += 0.002 + speed;
-            speed += 0.000005;
-        }
+        	// std:: cout << "printing " << std::endl;
+	        sphX += (signX * (0.02 + speed));
+	        sphY += (signY * (speed + 0.05));
+	        sphZ += 0.002 + speed;
+	        speed += 0.000005;
+    	}
         
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
         glutPostRedisplay();
