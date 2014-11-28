@@ -11,6 +11,7 @@
 #include <stdlib.h>     /* srand, rand */
 #include <complex>
 #include <iostream>
+#include <stdio.h>
 
 /* Global variables */
 double theta  = 0.25*(3.141593f / 180);
@@ -21,6 +22,7 @@ char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
 bool rotate;
+int score;
 int windowWidth = 680;
 int windowHeight = 350;
 int left[12][48] = {{1,1,1,2,2,2,3,3,3,4,4,4,
@@ -239,6 +241,7 @@ void sphere(void);
 double sphX;
 double sphY;
 double sphZ;
+double startingX, startingY, startingZ;
 int signX, signY;
 double speed;
 // float epsilon = 0.000000001;
@@ -255,7 +258,7 @@ void initGL() {
 /* el sphere el khafeya */
 void sphere(){
     glPushMatrix();
-    glTranslatef(6 + sphX, 5.5 + sphY, -0.2 - sphZ);
+    glTranslatef(startingX + sphX, startingY + sphY, startingZ - sphZ);
     glColor3f(1,0,0);
     glScalef(0.5, 0.5, 0);
     glutSolidSphere(0.5,30,30);
@@ -488,12 +491,85 @@ void anim(void) {
         
     }
     if(sphZ > -48 && start) {
-        
-        if(5.5 + sphY > 7 || 5.5 + sphY < 5) {
+        int zPosition = ceil(startingZ - sphZ);
+        double xPosition = startingX + sphX;
+        xPosition *= 10;
+        xPosition /= 2.5;
+        double yPosition = startingY + sphY;
+        yPosition *= 10;
+        yPosition /= 2.5;
+
+        if(5.5 + sphY > 7) {
+        	// hit upper wall
+        	switch(top[(int)yPosition][zPosition]) {
+        		case 1:
+        		score += 10;
+        		break;
+        		case 2:
+        		score += 20;
+        		break;
+        		case 3:
+        		score -= 30;
+        		break;
+        		default:
+        		score += 40;
+        		break;
+        	}
             signY *= -1;
         }
-        if(-0.5 + sphX > 1 || -0.5 + sphX < -2) {
+        if(5.5 + sphY < 5) {
+        	// hit bottom wall
+        	switch(bottom[(int)yPosition][zPosition]) {
+        		case 1:
+        		score += 10;
+        		break;
+        		case 2:
+        		score += 20;
+        		break;
+        		case 3:
+        		score -= 30;
+        		break;
+        		default:
+        		score += 40;
+        		break;
+        	}
+        	signY *= -1;	
+        }
+        if(-0.5 + sphX > 1) {
+        	// hit right wall
+        	switch(right[(int)yPosition][zPosition]) {
+        		case 1:
+        		score += 10;
+        		break;
+        		case 2:
+        		score += 20;
+        		break;
+        		case 3:
+        		score -= 30;
+        		break;
+        		default:
+        		score += 40;
+        		break;
+        	}
             signX *= -1;
+        }
+        if(-0.5 + sphX < -2) {
+        	// hit left wall
+        	switch(left[(int)yPosition][zPosition]) {
+        		case 1:
+        		score += 10;
+        		break;
+        		case 2:
+        		score += 20;
+        		break;
+        		case 3:
+        		score -= 30;
+        		break;
+        		default:
+        		score += 40;
+        		break;
+        	}
+        	signX *= -1;
         }
         if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
         	// std:: cout << "printing " << std::endl;
@@ -504,8 +580,7 @@ void anim(void) {
     	}
         
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-        glutPostRedisplay();
-        
+        glutPostRedisplay();   
     }
 }
 
@@ -519,7 +594,8 @@ void Keyboard(unsigned char key, int x, int y)
         case 'r':
             rotate = true;
             break;
-
+        case 'p':
+        	printf("Score is: %d\n", score);
     }
 }
 
@@ -528,6 +604,9 @@ int main(int argc, char** argv) {
     sphZ = 0;
     speed = 0;
     signX = signY = 1;
+    startingX = 6;
+    startingY = 5.5;
+    startingZ = -0.2 ;
     glutInit(&argc, argv);            // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
     glutInitWindowSize(680, 350);   // Set the window's initial width & height
