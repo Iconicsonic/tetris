@@ -462,31 +462,31 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void anim(void) {
-    // for(int i=0;i<19999999;i++);
-	// sphX += 1;
-	// sphY += 1;
-	
-	SetupLights();
-	glViewport(0, 0, windowWidth, windowHeight);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	if(angle > 20 && start){
-		angle -= 0.1;
-		sphZ += 0.002 + speed;
-
-		if(5.5 + sphY > 7 || 5.5 + sphY < 5) {
-			signY *= -1;
-		}
-
-		if(-0.5 + sphX > 1 || -0.5 + sphX < -2) {
-			signX *= -1;
-		}
-		sphX += (signX * (0.02 + speed));
-		sphY += (signY * (speed + 0.05));
-		speed += 0.000005;
-		gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-		glutPostRedisplay();
-	}
+    SetupLights();
+    glViewport(0, 0, windowWidth, windowHeight);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    if(angle > 15 && start){
+        angle -= 0.09;
+        // gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+        //  glutPostRedisplay();
+        
+    }
+    if(sphZ > -48 && start) {
+        sphZ += 0.002 + speed;
+        if(5.5 + sphY > 7 || 5.5 + sphY < 5) {
+            signY *= -1;
+        }
+        if(-0.5 + sphX > 1 || -0.5 + sphX < -2) {
+            signX *= -1;
+        }
+        sphX += (signX * (0.02 + speed));
+        sphY += (signY * (speed + 0.05));
+        speed += 0.000005;
+        gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+        glutPostRedisplay();
+        
+    }
 }
 
 void Keyboard(unsigned char key, int x, int y)
