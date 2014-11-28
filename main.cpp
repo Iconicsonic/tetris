@@ -2,11 +2,14 @@
 //  main.cpp
 //  25-2698_25-4602_25-5201_T10_T10_T10
 //
-//  Created by Almgohar on 11/27/14.
-//  Copyright (c) 2014 Almgohar. All rights reserved.
+//  Created by el dou7 wa a3wano on 11/27/14.
+//  Copyright (c) 2014 el dou7 wa a3wano. All rights reserved.
 //
-#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
-#include <OpenGL/OpenGL.h>
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
 #include <ctime>
 #include <stdlib.h>     /* srand, rand */
 #include <complex>
@@ -14,6 +17,10 @@
 
 
 /* Global variables */
+double theta  = 0.25*(3.141593f / 180);
+double cx = 0.0;
+double cy = 12.0;
+double cz = 0.0;
 char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
@@ -417,8 +424,11 @@ void display() {
     glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
     
     glLoadIdentity();// Reset the model-view matrix
-    gluLookAt(6.0, 6.0, 0.1, 6.0, 6.0, 0, 0.0, 12.0, 0.0);
-    
+    gluLookAt(6.0, 6.0, 0.1, 6.0, 6.0, 0, cx, cy, cz);
+    double tx = cx;
+    double ty = cy;
+    cx = (cosf(theta)*tx) - (sinf(theta)*ty);
+    cy = (sinf(theta)*tx) + (cosf(theta)*ty);
     
     
     glBegin(GL_QUADS);                // Begin drawing the room
@@ -508,7 +518,7 @@ void Keyboard(unsigned char key, int x, int y) {
     switch (key) {
         case 's':
             start = true;
-            break;
+            break;  
     }
 }
 
@@ -523,17 +533,17 @@ int main(int argc, char** argv) {
 	glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
 	glutInitWindowSize(680, 350);   // Set the window's initial width & height
 	glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
-	glutCreateWindow("Bouncing Ball");
 
-	glEnable(GL_LIGHT0);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_COLOR_MATERIAL);
-	glutDisplayFunc(display);
-	glClearColor(1.0f, 1.0f, 1.0f,0.0f); // background is white
-	glutIdleFunc(anim);//callig the anim func
-	glutKeyboardFunc (Keyboard);
-	glutReshapeFunc(reshape);       // Register callback handler for window re-size event
-	initGL();// Our own OpenGL initialization
-	glutMainLoop();                 // Enter the infinite event-processing loop
-	return 0;
+
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+    glutDisplayFunc(display);
+    glClearColor(1.0f, 1.0f, 1.0f,0.0f); // background is white
+    glutIdleFunc(anim);//callig the anim func
+    glutKeyboardFunc (Keyboard);
+    glutReshapeFunc(reshape);       // Register callback handler for window re-size event
+    initGL();// Our own OpenGL initialization
+    glutMainLoop();                 // Enter the infinite event-processing loop
+    return 0;
 }
