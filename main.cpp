@@ -486,6 +486,39 @@ void reshape(GLsizei width, GLsizei height) {
     gluPerspective(angle, aspect, 0.1f, 50.0f);
 }
 
+void repeat(void){
+    sphX = sphY = sphZ = speed = 0;
+    angle = 120;
+    SetupLights();
+    glViewport(0, 0, windowWidth, windowHeight);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    if(angle > 15 && start){
+        angle -= 0.09;
+    }
+    if(sphZ > -48 && start) {
+        int zPosition = ceil(startingZ - sphZ);
+        double xPosition = startingX + sphX;
+        xPosition *= 10;
+        xPosition /= 2.5;
+        double yPosition = startingY + sphY;
+        yPosition *= 10;
+        yPosition /= 2.5;
+        
+        if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
+            int div = 8;
+            sphX += (signX * (0.02/div + speed));
+            sphY += (signY * (speed + 0.05/div));
+            sphZ += (0.002 + speed);
+            speed += 0.000005;
+        }
+        
+        gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+        glutPostRedisplay();
+    }
+    
+}
+
 void anim(void) {
     SetupLights();
     glViewport(0, 0, windowWidth, windowHeight);
@@ -603,6 +636,10 @@ void Keyboard(unsigned char key, int x, int y)
             break;
         case 'p':
         	printf("Score is: %d\n", score);
+        case 'a':
+            repeat();
+            break;
+
     }
 }
 
