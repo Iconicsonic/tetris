@@ -276,32 +276,45 @@ void initGL() {
 }
 
 void drawScore(){
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glLoadIdentity();
-	gluOrtho2D(0, windowWidth,0, windowHeight);
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glLoadIdentity();
-
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
-
-	  // Render 2D elements here
-	glColor3f(1.0f, 1.0f, 1.0f );
-	glRasterPos2f(6, 6.1);
-	string s = "Score is: " + NumberToString(score);
-	int len = s.size();
-	for (int i = 0; i < len; i++) {
-	    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
-	}
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glPopMatrix();
-	glMatrixMode(GL_PROJECTION);
-	glPopMatrix();
-	glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0, windowWidth,0, windowHeight);
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+    
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    
+    // Render 2D elements here
+    glColor3f(1.0f, 1.0f, 1.0f );
+    glRasterPos2f(6, 33);
+    string s = "Score is: " + NumberToString(score);
+    int len = s.size();
+    for (int i = 0; i < len; i++) {
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
+    }
+    glRasterPos2f(6, 20);
+    string keys = "Press 's' to start, 'r' to rotate camera, 'q' to repeat scene.";
+    int keyslen = keys.size();
+    for (int i = 0; i < keyslen; i++) {
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, keys[i]);
+    }
+    glRasterPos2f(6, 6.1);
+    string positon = "To position shooting station, use keyboard arrows before clicking 's'.";
+    int posLen = positon.size();
+    for (int i = 0; i < posLen; i++) {
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, positon[i]);
+    }
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
 }
+
 
 /* el sphere el khafeya */
 void sphere(){
@@ -698,7 +711,7 @@ void processSpecialKeys(int key, int x, int y) {
                 break;
             case GLUT_KEY_RIGHT :
                 signX = 1;
-                sx = 1;
+                sX = 1;
                 madfa3DirecH = 1;
                 break;
             case GLUT_KEY_UP :
