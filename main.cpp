@@ -477,15 +477,15 @@ void SetupLights()
     GLfloat mat_ambient[] = { 0.7f, 0.7f, 0.7, 1.0f };
     GLfloat mat_diffuse[] = { 0.6f, 0.6f, 0.6, 1.0f };
     GLfloat mat_specular[] = { 1.0f, 1.0f, 1.0, 1.0f };
-    GLfloat mat_shininess[] = { 50 };
+    GLfloat mat_shininess[] = { 100 };
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, mat_ambient);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
     //set the light source properties
-    GLfloat lightIntensity[] = { 0.7f, 0.7f, 1, 1.0f };
-    GLfloat light_position[] = { -7.0f, 6.0f, 3.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightIntensity);
+    GLfloat lightIntensity[] = { 0.7f, 0.7f, 1, 0.0f };
+    GLfloat light_position[] = { 0.0f, 6.0f, -10.0f, 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
 }
 
@@ -708,7 +708,6 @@ void Keyboard(unsigned char key, int x, int y)
     }
 
 }
-
 
 void processSpecialKeys(int key, int x, int y) {
     if(!start) {
