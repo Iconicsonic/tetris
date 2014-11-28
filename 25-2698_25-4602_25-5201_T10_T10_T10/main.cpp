@@ -25,7 +25,9 @@ int top[20][50];
 int bottom[20][50];
 void generateRandom(void);
 void drawLeftWall(void);
-
+int sphX;
+int sphY;
+int sphZ;
 /* Initialize OpenGL Graphics */
 void initGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
@@ -34,6 +36,15 @@ void initGL() {
     glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
     glShadeModel(GL_SMOOTH);   // Enable smooth shading
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
+}
+
+/* el sphere el khafeya */
+void sphere(){
+   glPushMatrix();
+   glTranslated(sphX,sphY,sphZ);
+   glutSolidSphere(0.3);
+   glPopMatrix();
+
 }
 
 void drawLeftWall(){
@@ -73,6 +84,8 @@ void display() {
     glLoadIdentity();// Reset the model-view matrix
     gluLookAt(0.0, 6.0, 0.1, 0, 6.0, 0, 0.0, 12.0, 0.0);
     glTranslatef(0.5f, 0.0f, 0.0f);  // Move right and into the screen
+    
+    sphere(); //ersem el sphere
     
     glBegin(GL_QUADS);                // Begin drawing the room
     // Top face (y = 12.0f)
