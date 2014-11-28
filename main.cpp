@@ -13,7 +13,6 @@
 #include <iostream>
 
 
-
 /* Global variables */
 char title[] = "3D Shapes";
 float angle = 120.0;
@@ -254,6 +253,7 @@ void sphere(){
     glPushMatrix();
     // cout << sphX << " " << sphY << endl;
     // cout << "x axis " << (-0.5 + sphX) << endl;
+    std::cout << "Z " << (-0.2 - sphZ) << std::endl;
     glTranslatef(6 + sphX, 5.5 + sphY, -0.2 - sphZ);
     glColor3f(0,0,0);
     glScalef(0.5, 0.5, 0);
@@ -473,16 +473,21 @@ void anim(void) {
         
     }
     if(sphZ > -48 && start) {
-        sphZ += 0.002 + speed;
+        
         if(5.5 + sphY > 7 || 5.5 + sphY < 5) {
             signY *= -1;
         }
         if(-0.5 + sphX > 1 || -0.5 + sphX < -2) {
             signX *= -1;
         }
-        sphX += (signX * (0.02 + speed));
-        sphY += (signY * (speed + 0.05));
-        speed += 0.000005;
+        if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
+        	// std:: cout << "printing " << std::endl;
+	        sphX += (signX * (0.02 + speed));
+	        sphY += (signY * (speed + 0.05));
+	        sphZ += 0.002 + speed;
+	        speed += 0.000005;
+    	}
+        
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
         glutPostRedisplay();
         
