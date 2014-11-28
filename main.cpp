@@ -462,7 +462,7 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void anim(void) {
-    for(int i=0;i<19999999;i++);
+    // for(int i=0;i<19999999;i++);
 	// sphX += 1;
 	// sphY += 1;
 	
@@ -471,22 +471,20 @@ void anim(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if(angle > 20 && start){
-		angle -= 3;
-		sphZ += 0.1;
+		angle -= 0.3;
+		sphZ += 0.01;
 		
 
 		if(5.5 + sphY > 6.5 + speed || 5.5 + sphY < 5 + 1.5*speed) {
-		// if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
 			signY *= -1;
 		}
 
 		if(-0.5 + sphX > 1 + speed || -0.5 + sphX < (-2 + 1.5*speed)) {
-		// if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
 			signX *= -1;
 		}
-		sphX += (signX * (0.3 + speed));
-		sphY += (signY * (speed + 0.15));
-		speed += 0.004;
+		sphX += (signX * (0.02 + speed));
+		sphY += (signY * (speed + 0.05));
+		// speed += 0.0004;
 		gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
 		glutPostRedisplay();
 	}
