@@ -17,6 +17,7 @@
 char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
+int score;
 int windowWidth = 680;
 int windowHeight = 350;
 int left[12][48] = {{1,1,1,2,2,2,3,3,3,4,4,4,
@@ -235,6 +236,7 @@ void sphere(void);
 double sphX;
 double sphY;
 double sphZ;
+double sphereStartX, sphereStartY, sphereStartZ;
 int signX, signY;
 double speed;
 // float epsilon = 0.000000001;
@@ -253,7 +255,7 @@ void sphere(){
     glPushMatrix();
     // cout << sphX << " " << sphY << endl;
     // cout << "x axis " << (-0.5 + sphX) << endl;
-    std::cout << "Z " << (-0.2 - sphZ) << std::endl;
+    std::cout << "not at " << (6 + sphX) << std::endl;
     glTranslatef(6 + sphX, 5.5 + sphY, -0.2 - sphZ);
     glColor3f(0,0,0);
     glScalef(0.5, 0.5, 0);
@@ -442,8 +444,7 @@ void display() {
     
 }
 
-bool double_equals(double a, double b, double epsilon = 0.001)
-{
+bool double_equals(double a, double b, double epsilon = 0.001) {
     return std::abs(a - b) < epsilon;
 }
 
@@ -470,15 +471,26 @@ void anim(void) {
         angle -= 0.09;
         // gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
         //  glutPostRedisplay();
-        
     }
     if(sphZ > -48 && start) {
-        
-        if(5.5 + sphY > 7 || 5.5 + sphY < 5) {
+        if(5.5 + sphY > 7) {
+        	// hit upper wall
+        	switch(top[12][ceil(sphereStartZ - sphZ)]) {
+        		
+        	}
             signY *= -1;
         }
-        if(-0.5 + sphX > 1 || -0.5 + sphX < -2) {
+        if(5.5 + sphY < 5) {
+        	// hit bottom wall
+        	signY *= -1;
+        }
+        if(-0.5 + sphX > 1) {
+        	// hit right wall
             signX *= -1;
+        }
+        if(-0.5 + sphX < -2) {
+        	// hit left wall
+        	signX *= -1;
         }
         if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
         	// std:: cout << "printing " << std::endl;
@@ -487,17 +499,13 @@ void anim(void) {
 	        sphZ += 0.002 + speed;
 	        speed += 0.000005;
     	}
-        
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
         glutPostRedisplay();
-        
     }
 }
 
-void Keyboard(unsigned char key, int x, int y)
-{
-    switch (key)
-    {
+void Keyboard(unsigned char key, int x, int y) {
+    switch (key) {
         case 's':
             start = true;
             break;
@@ -506,9 +514,11 @@ void Keyboard(unsigned char key, int x, int y)
 
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
-	sphZ = 0;
-	speed = 0;
+	speed = score = sphZ = 0;
 	signX = signY = 1;
+	sphereStartX = 6;
+	sphereStartY = 5.5;
+	sphereStartZ = -0.2;
 	glutInit(&argc, argv);            // Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
 	glutInitWindowSize(680, 350);   // Set the window's initial width & height
