@@ -252,7 +252,7 @@ double sphX;
 double sphY;
 double sphZ;
 double startingX, startingY, startingZ;
-int signX, signY;
+int signX, signY, sX, sY;
 double speed;
 // float epsilon = 0.000000001;
 /* Initialize OpenGL Graphics */
@@ -533,115 +533,17 @@ void reshape(GLsizei width, GLsizei height) {
     gluPerspective(angle, aspect, 0.1f, 50.0f);
 }
 
-if(!repeatScene){
-    SetupLights();
-    
-    glViewport(0, 0, windowWidth, windowHeight);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    if(angle > 15 && start){
-        angle -= 0.17;
-    }
-    
-    if(sphZ > -48 && start) {
-        int zPosition = ceil(startingZ - sphZ);
-        double xPosition = startingX + sphX;
-        xPosition *= 10;
-        xPosition /= 2.5;
-        double yPosition = startingY + sphY;
-        yPosition *= 10;
-        yPosition /= 2.5;
-        
-        if(5.5 + sphY > 7) {
-            // hit upper wall
-            switch(top[(int)yPosition][zPosition]) {
-                case 1:
-                    score += 10;
-                    break;
-                case 2:
-                    score += 20;
-                    break;
-                case 3:
-                    score -= 30;
-                    break;
-                default:
-                    score += 40;
-                    break;
-            }
-            sY *= -1;
-        }
-        if(5.5 + sphY < 5) {
-            // hit bottom wall
-            switch(bottom[(int)yPosition][zPosition]) {
-                case 1:
-                    score += 10;
-                    break;
-                case 2:
-                    score += 20;
-                    break;
-                case 3:
-                    score -= 30;
-                    break;
-                default:
-                    score += 40;
-                    break;
-            }
-            sY *= -1;
-        }
-        if(-0.5 + sphX > 1) {
-            // hit right wall
-            switch(right[(int)yPosition][zPosition]) {
-                case 1:
-                    score += 10;
-                    break;
-                case 2:
-                    score += 20;
-                    break;
-                case 3:
-                    score -= 30;
-                    break;
-                default:
-                    score += 40;
-                    break;
-            }
-            sX *= -1;
-        }
-        if(-0.5 + sphX < -2) {
-            // hit left wall
-            switch(left[(int)yPosition][zPosition]) {
-                case 1:
-                    score += 10;
-                    break;
-                case 2:
-                    score += 20;
-                    break;
-                case 3:
-                    score -= 30;
-                    break;
-                default:
-                    score += 40;
-                    break;
-            }
-            sX *= -1;
-        }
-        if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
-            sphX += (sX * (0.04 + speed));
-            sphY += (sY * (speed + 0.07));
-            sphZ += 0.004 + speed;
-            speed += 0.00001;
-        }
-        gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-        glutPostRedisplay();
-    } else {
-        sphX = sphY = sphZ = speed = 0;
-        angle = 120;
+void anim(void) {
+    if(!repeatScene){
         SetupLights();
+        
         glViewport(0, 0, windowWidth, windowHeight);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         if(angle > 15 && start){
-            angle -= 0.09;
+            angle -= 0.17;
         }
+        
         if(sphZ > -48 && start) {
             int zPosition = ceil(startingZ - sphZ);
             double xPosition = startingX + sphX;
@@ -651,22 +553,119 @@ if(!repeatScene){
             yPosition *= 10;
             yPosition /= 2.5;
             
+            if(5.5 + sphY > 7) {
+                // hit upper wall
+                switch(top[(int)yPosition][zPosition]) {
+                    case 1:
+                        score += 10;
+                        break;
+                    case 2:
+                        score += 20;
+                        break;
+                    case 3:
+                        score -= 30;
+                        break;
+                    default:
+                        score += 40;
+                        break;
+                }
+                sY *= -1;
+            }
+            if(5.5 + sphY < 5) {
+                // hit bottom wall
+                switch(bottom[(int)yPosition][zPosition]) {
+                    case 1:
+                        score += 10;
+                        break;
+                    case 2:
+                        score += 20;
+                        break;
+                    case 3:
+                        score -= 30;
+                        break;
+                    default:
+                        score += 40;
+                        break;
+                }
+                sY *= -1;
+            }
+            if(-0.5 + sphX > 1) {
+                // hit right wall
+                switch(right[(int)yPosition][zPosition]) {
+                    case 1:
+                        score += 10;
+                        break;
+                    case 2:
+                        score += 20;
+                        break;
+                    case 3:
+                        score -= 30;
+                        break;
+                    default:
+                        score += 40;
+                        break;
+                }
+                sX *= -1;
+            }
+            if(-0.5 + sphX < -2) {
+                // hit left wall
+                switch(left[(int)yPosition][zPosition]) {
+                    case 1:
+                        score += 10;
+                        break;
+                    case 2:
+                        score += 20;
+                        break;
+                    case 3:
+                        score -= 30;
+                        break;
+                    default:
+                        score += 40;
+                        break;
+                }
+                sX *= -1;
+            }
             if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
-                int div = 8;
-                sphX += (signX * (0.02/div + speed));
-                sphY += (signY * (speed + 0.05/div));
-                sphZ += (0.002 + speed);
-                speed += 0.0000005;
+                sphX += (sX * (0.04 + speed));
+                sphY += (sY * (speed + 0.07));
+                sphZ += 0.004 + speed;
+                speed += 0.00001;
             }
             gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
             glutPostRedisplay();
+        } else {
+            sphX = sphY = sphZ = speed = 0;
+            angle = 120;
+            SetupLights();
+            glViewport(0, 0, windowWidth, windowHeight);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            if(angle > 15 && start){
+                angle -= 0.09;
+            }
+            if(sphZ > -48 && start) {
+                int zPosition = ceil(startingZ - sphZ);
+                double xPosition = startingX + sphX;
+                xPosition *= 10;
+                xPosition /= 2.5;
+                double yPosition = startingY + sphY;
+                yPosition *= 10;
+                yPosition /= 2.5;
+                
+                if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
+                    int div = 8;
+                    sphX += (signX * (0.02/div + speed));
+                    sphY += (signY * (speed + 0.05/div));
+                    sphZ += (0.002 + speed);
+                    speed += 0.0000005;
+                }
+                gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+                glutPostRedisplay();
+            }
+            
         }
-        
     }
 }
-}
-
-
 void Keyboard(unsigned char key, int x, int y)
 {
     switch (key)
@@ -694,18 +693,22 @@ void processSpecialKeys(int key, int x, int y) {
         switch(key) {
             case GLUT_KEY_LEFT :
                 signX= -1;
+                sX = -1;
                 madfa3DirecH = -1;
                 break;
             case GLUT_KEY_RIGHT :
                 signX = 1;
+                sx = 1;
                 madfa3DirecH = 1;
                 break;
             case GLUT_KEY_UP :
                 signY = 1;
+                sY = 1;
                 madfa3DircV = 15;
                 break;
             case GLUT_KEY_DOWN :
                 signY = -1;
+                sY = -1;
                 madfa3DircV = -15;
                 break;
         }
