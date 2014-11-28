@@ -5,13 +5,13 @@
 //  Created by el dou7 wa a3wano on 11/27/14.
 //  Copyright (c) 2014 el dou7 wa a3wano. All rights reserved.
 //
-//#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
-//#include <OpenGL/OpenGL.h>
-#include <GL/glew.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glext.h>
+#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
+#include <OpenGL/OpenGL.h>
+// #include <GL/glew.h>
+// #include <GL/glut.h>
+// #include <GL/gl.h>
+// #include <GL/glu.h>
+// #include <GL/glext.h>
 #include <ctime>
 #include <stdlib.h>     /* srand, rand */
 #include <complex>
@@ -29,7 +29,7 @@ char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
 bool rotate;
-int score;
+int score = 0;
 int madfa3DirecH = 0;
 int madfa3DircV = 0;
 int windowWidth = 680;
@@ -255,6 +255,16 @@ int signX, signY;
 double speed;
 // float epsilon = 0.000000001;
 /* Initialize OpenGL Graphics */
+
+template <typename T>
+string NumberToString ( T Number )
+{
+	std::stringstream ss;
+	ss << Number;
+	return ss.str();
+}
+
+
 void initGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
     glClearDepth(1.0f);                   // Set background depth to farthest
@@ -262,6 +272,34 @@ void initGL() {
     glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
     glShadeModel(GL_SMOOTH);   // Enable smooth shading
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
+}
+
+void drawScore(){
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(0, windowWidth,0, windowHeight);
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+
+	  // Render 2D elements here
+	glColor3f(1.0f, 1.0f, 1.0f );
+	glRasterPos2f(6, 6.1);
+	string s = "Score is: " + NumberToString(score);
+	int len = s.size();
+	for (int i = 0; i < len; i++) {
+	    glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
+	}
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
 }
 
 /* el sphere el khafeya */
@@ -467,7 +505,8 @@ void display() {
     glEnd();  // End of drawing room
     
     sphere(); //ersem el sphere
-    madfa3(); //ersm el madfa3        
+    madfa3(); //ersm el madfa3 
+    drawScore();       
     glFlush();
     glLoadIdentity();                  // Reset the model-view matrix
     glutSwapBuffers();  // Swap the front and back frame buffers (double buffering)
@@ -493,42 +532,9 @@ void reshape(GLsizei width, GLsizei height) {
     gluPerspective(angle, aspect, 0.1f, 50.0f);
 }
 
-void repeat(void){
-    sphX = sphY = sphZ = speed = 0;
-    angle = 120;
-    SetupLights();
-    glViewport(0, 0, windowWidth, windowHeight);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    if(angle > 15 && start){
-        angle -= 0.09;
-    }
-    if(sphZ > -48 && start) {
-        int zPosition = ceil(startingZ - sphZ);
-        double xPosition = startingX + sphX;
-        xPosition *= 10;
-        xPosition /= 2.5;
-        double yPosition = startingY + sphY;
-        yPosition *= 10;
-        yPosition /= 2.5;
-        
-        if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
-            int div = 8;
-            sphX += (signX * (0.02/div + speed));
-            sphY += (signY * (speed + 0.05/div));
-            sphZ += (0.002 + speed);
-            speed += 0.000005;
-        }
-        
-        gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-        glutPostRedisplay();
-    }
-    
-}
-
 void anim(void) {
     SetupLights();
-    glViewport(0, 0, windowWidth, windowHeight-20);
+    // glViewport(0, 0, windowWidth, windowHeight-20);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if(angle > 15 && start){
@@ -548,7 +554,7 @@ void anim(void) {
 
         if(5.5 + sphY > 7) {
         	// hit upper wall
-        	switch(top[(int)yPosition][zPosition]) {
+        	switch(top[(int)xPosition][zPosition]) {
         		case 1:
         		score += 10;
         		break;
@@ -566,7 +572,7 @@ void anim(void) {
         }
         if(5.5 + sphY < 5) {
         	// hit bottom wall
-        	switch(bottom[(int)yPosition][zPosition]) {
+        	switch(bottom[(int)xPosition][zPosition]) {
         		case 1:
         		score += 10;
         		break;
@@ -620,27 +626,14 @@ void anim(void) {
         }
         if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
         	// std:: cout << "printing " << std::endl;
-	        sphX += (signX * (0.02 + speed));
-	        sphY += (signY * (speed + 0.05));
-	        sphZ += 0.002 + speed;
+	        sphX += (signX * (0.09 + speed));
+	        sphY += (signY * (speed + 0.1));
+	        sphZ += 0.005 + speed;
 	        speed += 0.000005;
     	}
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+
         glutPostRedisplay();
-        glViewport(0,20,windowWidth,windowHeight);
-        glClearColor(0, 0, 0, 0);
-        glColor3f( 1.0f, 1.0f, 1.0f );
-        glRasterPos2f(6, 5.5);
-        int len;
-        int i;
-        string s = "Score is: ";
-        len = s.size();
-        for (i = 0; i < len; i++) {
-            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
-        }
-
-
-
     }
 }
 
@@ -656,10 +649,6 @@ void Keyboard(unsigned char key, int x, int y)
             break;
         case 'p':
         	printf("Score is: %d\n", score);
-        case 'a':
-            repeat();
-            break;
-
     }
 }
 
