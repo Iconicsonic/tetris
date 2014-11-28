@@ -5,13 +5,20 @@
 //  Created by el dou7 wa a3wano on 11/27/14.
 //  Copyright (c) 2014 el dou7 wa a3wano. All rights reserved.
 //
-#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
-#include <OpenGL/OpenGL.h>
+//#include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
+//#include <OpenGL/OpenGL.h>
+#include <GL/glew.h>
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
 #include <ctime>
 #include <stdlib.h>     /* srand, rand */
 #include <complex>
 #include <iostream>
 #include <stdio.h>
+#include <string>
+using std::string;
 
 /* Global variables */
 double theta  = 0.25*(3.141593f / 180);
@@ -481,7 +488,7 @@ void reshape(GLsizei width, GLsizei height) {
 
 void anim(void) {
     SetupLights();
-    glViewport(0, 0, windowWidth, windowHeight);
+    glViewport(0, 0, windowWidth, windowHeight-20);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if(angle > 15 && start){
@@ -581,6 +588,19 @@ void anim(void) {
         
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
         glutPostRedisplay();   
+        glViewport(0,20,windowWidth,windowHeight);
+        glClearColor(0, 0, 0, 0);
+        glColor3f( 1.0f, 1.0f, 1.0f );
+//        glRasterPos2f(windowWidth-10, windowHeight-10);
+        int len;
+        int i;
+        string s = "Score is: ";
+        len = s.size();
+        for (i = 0; i < len; i++) {
+            glutBitmapCharacter(GLUT_BITMAP_9_BY_15, s[i]);
+        }
+
+
     }
 }
 
