@@ -10,14 +10,17 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
-#include <ctime>  // GLUT, include glu.h and gl.h
+#include <ctime>
 #include <stdlib.h>     /* srand, rand */
 #include <complex>
 #include <iostream>
 
 
-
 /* Global variables */
+double theta  = 0.25*(3.141593f / 180);
+double cx = 0.0;
+double cy = 12.0;
+double cz = 0.0;
 char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
@@ -257,10 +260,11 @@ void sphere(){
     glPushMatrix();
     // cout << sphX << " " << sphY << endl;
     // cout << "x axis " << (-0.5 + sphX) << endl;
+    std::cout << "Z " << (-0.2 - sphZ) << std::endl;
     glTranslatef(6 + sphX, 5.5 + sphY, -0.2 - sphZ);
     glColor3f(0,0,0);
     glScalef(0.5, 0.5, 0);
-    glutWireSphere(0.3,20,20);
+    glutWireSphere(0.2,10,10);
     glPopMatrix();
 }
 
@@ -418,8 +422,11 @@ void display() {
     glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
     
     glLoadIdentity();// Reset the model-view matrix
-    gluLookAt(6.0, 6.0, 0.1, 6.0, 6.0, 0, 0.0, 12.0, 0.0);
-    
+    gluLookAt(6.0, 6.0, 0.1, 6.0, 6.0, 0, cx, cy, cz);
+    double tx = cx;
+    double ty = cy;
+    cx = (cosf(theta)*tx) - (sinf(theta)*ty);
+    cy = (sinf(theta)*tx) + (cosf(theta)*ty);
     
     
     glBegin(GL_QUADS);                // Begin drawing the room
@@ -465,33 +472,35 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void anim(void) {
-    for(int i=0;i<100000000;i++);
-    // sphX += 1;
-    // sphY += 1;
-    
     SetupLights();
     glViewport(0, 0, windowWidth, windowHeight);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if(angle > 20 && start){
-        angle -= 3;
-        sphZ += 0.1;
+    if(angle > 15 && start){
+        angle -= 0.09;
+        // gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+        //  glutPostRedisplay();
         
-
-        if(5.5 + sphY > 6.5 + speed || 5.5 + sphY < 5 + 1.5*speed) {
-        // if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
+    }
+    if(sphZ > -48 && start) {
+        
+        if(5.5 + sphY > 7 || 5.5 + sphY < 5) {
             signY *= -1;
         }
-
-        if(-0.5 + sphX > 1 + speed || -0.5 + sphX < (-2 + 1.5*speed)) {
-        // if( double_equals(-0.5 + sphX, 1) || double_equals(-0.5 + sphX, -2)) {
+        if(-0.5 + sphX > 1 || -0.5 + sphX < -2) {
             signX *= -1;
         }
-        sphX += (signX * (0.3 + speed));
-        sphY += (signY * (speed + 0.15));
-        speed += 0.004;
+        if(!(sphZ > 5.5 && sphX < 0.3 && sphX > -0.3 && sphY < 0.1 && sphY > -0.01)) {
+            // std:: cout << "printing " << std::endl;
+            sphX += (signX * (0.02 + speed));
+            sphY += (signY * (speed + 0.05));
+            sphZ += 0.002 + speed;
+            speed += 0.000005;
+        }
+        
         gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
         glutPostRedisplay();
+        
     }
 }
 
@@ -501,13 +510,14 @@ void Keyboard(unsigned char key, int x, int y)
     {
         case 's':
             start = true;
-            break;
+            break;  
     }
 }
 
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
     sphZ = 0;
+    speed = 0;
     signX = signY = 1;
     glutInit(&argc, argv);            // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
