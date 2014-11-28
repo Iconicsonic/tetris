@@ -257,7 +257,7 @@ void sphere(){
     glTranslatef(6 + sphX, 5.5 + sphY, -0.2 - sphZ);
     glColor3f(0,0,0);
     glScalef(0.5, 0.5, 0);
-    glutWireSphere(0.3,20,20);
+    glutWireSphere(0.2,10,10);
     glPopMatrix();
 }
 
@@ -471,20 +471,19 @@ void anim(void) {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if(angle > 20 && start){
-		angle -= 0.3;
-		sphZ += 0.01;
-		
+		angle -= 0.1;
+		sphZ += 0.002 + speed;
 
-		if(5.5 + sphY > 6.5 + speed || 5.5 + sphY < 5 + 1.5*speed) {
+		if(5.5 + sphY > 7 || 5.5 + sphY < 5) {
 			signY *= -1;
 		}
 
-		if(-0.5 + sphX > 1 + speed || -0.5 + sphX < (-2 + 1.5*speed)) {
+		if(-0.5 + sphX > 1 || -0.5 + sphX < -2) {
 			signX *= -1;
 		}
 		sphX += (signX * (0.02 + speed));
 		sphY += (signY * (speed + 0.05));
-		// speed += 0.0004;
+		speed += 0.000005;
 		gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
 		glutPostRedisplay();
 	}
@@ -503,6 +502,7 @@ void Keyboard(unsigned char key, int x, int y)
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
 	sphZ = 0;
+	speed = 0;
 	signX = signY = 1;
 	glutInit(&argc, argv);            // Initialize GLUT
 	glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
