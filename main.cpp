@@ -23,6 +23,8 @@ float angle = 120.0;
 bool start;
 bool rotate;
 int score;
+int madfa3DirecH = 0;
+int madfa3DircV = 0;
 int windowWidth = 680;
 int windowHeight = 350;
 int left[12][48] = {{1,1,1,2,2,2,3,3,3,4,4,4,
@@ -267,11 +269,16 @@ void sphere(){
 
 void madfa3() {
     glPushMatrix();
-    glTranslatef(6 , 5.8, -0.02);
+    glTranslatef(6, 5.8, -0.05);
     glColor3f(1,0.7,0);
-    glScalef(0.5, 0.5, 0);
-    glRotated(45, 1, 0, 0);
-    glutSolidCone(0.25, 1, 30, 30);
+    glScalef(0.5, 0.25, 0);
+    int directionZ  = madfa3DirecH * 1;
+    int directionY = madfa3DirecH * -1;
+    int directionX = madfa3DircV + 45;
+    GLUquadricObj *quadratic;
+    quadratic = gluNewQuadric();
+    glRotated(directionX,0,directionY, directionZ);
+    gluCylinder(quadratic, 0.2, 0.2, 1, 30, 30);
     glPopMatrix();
 }
 
@@ -599,11 +606,34 @@ void Keyboard(unsigned char key, int x, int y)
     }
 }
 
+
+void processSpecialKeys(int key, int x, int y) {
+    if(!start) {
+        switch(key) {
+            case GLUT_KEY_LEFT :
+                signX= -1;
+                madfa3DirecH = -1;
+                break;
+            case GLUT_KEY_RIGHT :
+                signX = 1;
+                madfa3DirecH = 1;
+                break;
+            case GLUT_KEY_UP :
+                signY = 1;
+                madfa3DircV = 15;
+                break;
+            case GLUT_KEY_DOWN :
+                signY = -1;
+                madfa3DircV = -15;
+                break;
+        }
+    }
+}
+
 /* Main function: GLUT runs as a console application starting at main() */
 int main(int argc, char** argv) {
     sphZ = 0;
     speed = 0;
-    signX = signY = 1;
     startingX = 6;
     startingY = 5.5;
     startingZ = -0.2 ;
@@ -620,7 +650,9 @@ int main(int argc, char** argv) {
     glClearColor(1.0f, 1.0f, 1.0f,0.0f); // background is white
     glutIdleFunc(anim);//callig the anim func
     glutKeyboardFunc (Keyboard);
+    glutSpecialFunc(processSpecialKeys);
     glutReshapeFunc(reshape);       // Register callback handler for window re-size event
+    
     initGL();// Our own OpenGL initialization
     glutMainLoop();                 // Enter the infinite event-processing loop
     return 0;
