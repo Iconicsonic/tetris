@@ -7,15 +7,24 @@
 //
 #include <GLUT/glut.h>  // GLUT, include glu.h and gl.h
 #include <OpenGL/OpenGL.h>
+#include<ctime>
+#include <stdlib.h>     /* srand, rand */
+
+
 
 /* Global variables */
 char title[] = "3D Shapes";
 float angle = 120.0;
 bool start;
+int windowWidth = 680;
+int windowHeight = 350;
+float z = -5.0f;
 int left[10][50];
 int right[10][50];
 int top[20][50];
 int bottom[20][50];
+void generateRandom(void);
+void drawLeftWall(void);
 
 /* Initialize OpenGL Graphics */
 void initGL() {
@@ -26,6 +35,35 @@ void initGL() {
     glShadeModel(GL_SMOOTH);   // Enable smooth shading
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
 }
+
+void drawLeftWall(){
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 4; j++) {
+            srand(time(NULL));
+            generateRandom();
+            glVertex3f(-6.0f,  (float)j+3, -(float)i-6);
+            glVertex3f(-6.0f, (float)j+3, (float)i);
+            glVertex3f(-6.0f, (float)j,  (float)i);
+            glVertex3f(-6.0f,  (float)j,  -(float)i-6);
+            
+        }
+    }
+}
+
+void generateRandom(){
+    int color = rand()%4 + 1;
+    switch(color) {
+        case 1: glColor3f(0.6f, 0.6f, 1.0f); break;
+        case 2: glColor3f(0.0f, 0.8f, 0.8f); break;
+        case 3: glColor3f(0.4f, 0.0f, 0.4f); break;
+        case 4: glColor3f(0.0f, 0.5f, 1); break;
+        default: glColor3f(0.0f,0.0f,0.0f); break;
+    }
+}
+
+    
+
+
 /* Handler for window-repaint event. Called back when the window first appears and
  whenever the window needs to be re-painted. */
 void display() {
@@ -33,46 +71,61 @@ void display() {
     glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
     
     glLoadIdentity();// Reset the model-view matrix
-    gluLookAt(0.0, 5.0, 0.1, 0, 5.0, 0, 0.0, 10.0, 0.0);
+    gluLookAt(0.0, 6.0, 0.1, 0, 6.0, 0, 0.0, 12.0, 0.0);
     glTranslatef(0.5f, 0.0f, 0.0f);  // Move right and into the screen
     
     glBegin(GL_QUADS);                // Begin drawing the room
-    // Top face (y = 10.0f)
+    // Top face (y = 12.0f)
     // Define vertices in counter-clockwise (CCW) order with normal pointing out
     glColor3f(0.0f, 0.5f, 1.0f);
-    glVertex3f( 10.0f, 10.0f, 0.0f);
-    glVertex3f(-10.0f, 10.0f, 0.0f);
-    glVertex3f(-10.0f, 10.0f,  -49.0f);
-    glVertex3f( 10.0f, 10.0f,  -49.0f);
+    glVertex3f( 6.0f, 12.0f, 0.0f);
+    glVertex3f(-6.0f, 12.0f, 0.0f);
+    glVertex3f(-6.0f, 12.0f,  -48.0f);
+    glVertex3f( 6.0f, 12.0f,  -48.0f);
     
-    // Back wall (z = -50.0f)
+    // Back wall (z = -48.0f)
     glColor3f(1.0f,0.2f, 0.0f);
-    glVertex3f( 10.0f, 10.0f,  -49.0f);
-    glVertex3f(-10.0f, 10.0f,  -49.0f);
-    glVertex3f(-10.0f, 0.0f, -49.0f);
-    glVertex3f( 10.0f, 0.0f, -49.0f);
+    glVertex3f( 6.0f, 12.0f,  -48.0f);
+    glVertex3f(-6.0f, 12.0f,  -48.0f);
+    glVertex3f(-6.0f, 0.0f, -48.0f);
+    glVertex3f( 6.0f, 0.0f, -48.0f);
     
     // bottom wall (y = 0.0f)
-    glColor3f(0.0f, 0.5f, 1.0f);
-    glVertex3f( 10.0f, 0.0f, 0.0f);
-    glVertex3f(-10.0f, 0.0f, 0.0f);
-    glVertex3f(-10.0f,  0.0f, -50.0f);
-    glVertex3f( 10.0f,  0.0f, -50.0f);
+    glColor3f(0.0, 0.5f, 1.0f);
+    glVertex3f( 6.0f, 0.0f, 0.0f);
+    glVertex3f(-6.0f, 0.0f, 0.0f);
+    glVertex3f(-6.0f,  0.0f, -48.0f);
+    glVertex3f( 6.0f,  0.0f, -48.0f);
     
-    // Left wall (x = -10.0f)
+//    // Left wall (x = -6.0f)
     glColor3f(0.0f, 1.0f, 1.0f);
-    glVertex3f(-10.0f,  10.0f, -49.0f);
-    glVertex3f(-10.0f, 10.0f, 0.0f);
-    glVertex3f(-10.0f, 0.0f,  0.0f);
-    glVertex3f(-10.0f,  0.0f,  -49.0f);
+    glVertex3f(-6.0f,  12.0f, -48.0f);
+    glVertex3f(-6.0f, 12.0f, 0.0f);
+    glVertex3f(-6.0f, 0.0f,  0.0f);
+    glVertex3f(-6.0f,  0.0f,  -48.0f);
     
-    // Right wall (x = 10.0f)
+ //   drawLeftWall();
+    
+    // Right wall (x = 6.0f)
     glColor3f(0.0f, 1.0f, 1.0f);
-    glVertex3f(10.0f, 10.0f, 0.0f);
-    glVertex3f(10.0f, 10.0f, -49.0f);
-    glVertex3f(10.0f, 0.0f,  -49.0f);
-    glVertex3f(10.0f, 0.0f, 0.0f);
+    glVertex3f(6.0f, 12.0f, 0.0f);
+    glVertex3f(6.0f, 12.0f, -48.0f);
+    glVertex3f(6.0f, 0.0f,  -48.0f);
+    glVertex3f(6.0f, 0.0f, 0.0f);
     glEnd();  // End of drawing color-cube
+    
+//    glPushMatrix();
+//    glTranslatef(0.0,0.0,z);
+//    // Red color used to draw.
+//    glColor3f(1.0f, 0.0f, 0.0f);
+//    // scaling transfomation
+//    glScalef(1.0,1.0,1.0);
+//    // built-in (glut library) function , draw you a sphere.
+//    glutSolidSphere(2,8,8);
+//    // Flush buffers to screen
+//    glPopMatrix();
+//    
+//    glFlush();
     glLoadIdentity();                  // Reset the model-view matrix
     glutSwapBuffers();  // Swap the front and back frame buffers (double buffering)
 }
@@ -94,27 +147,30 @@ void SetupLights()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, lightIntensity);
 }
 
-///* Handler for window re-size event. Called back when the window first appears and
-// whenever the window is re-sized with its new width and height */
-//void reshape(GLsizei width, GLsizei height) {
-//    SetupLights();
-//    if (height == 0) height = 1;                // To prevent divide by 0
-//    GLfloat aspect = (GLfloat)640 / (GLfloat)300;
-//    glViewport(0, 0, width, height);
-//    glMatrixMode(GL_PROJECTION);
-//    glLoadIdentity();
-//    gluPerspective(angle, aspect, 0.1f, 50.0f);
-//}
+/* Handler for window re-size event. Called back when the window first appears and
+ whenever the window is re-sized with its new width and height */
+void reshape(GLsizei width, GLsizei height) {
+    windowWidth = width;
+    windowHeight = height;
+    SetupLights();
+    if (height == 0) height = 1;                // To prevent divide by 0
+    GLfloat aspect = (GLfloat)width / (GLfloat)height;
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(angle, aspect, 0.1f, 50.0f);
+}
 
 void anim(void) {
     for(int i=0;i<100000000;i++);
     SetupLights();
-        glViewport(0, 0, 640, 300);
+        glViewport(0, 0, windowWidth, windowHeight);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if(angle > 20 && start){
         angle-=3;
-        gluPerspective(angle, (float)640/(float)300, 0.1f, 50.0f);
+        z-= 1.0f;
+        gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
     glutPostRedisplay();
     }
 
@@ -134,15 +190,16 @@ void Keyboard(unsigned char key, int x, int y)
 int main(int argc, char** argv) {
     glutInit(&argc, argv);            // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
-    glutInitWindowSize(640, 300);   // Set the window's initial width & height
+    glutInitWindowSize(680, 350);   // Set the window's initial width & height
     glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
     glutCreateWindow("Bouncing Ball");
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
-    glutDisplayFunc(display);       // Register callback handler for window re-paint event
+    glutDisplayFunc(display);
     glutIdleFunc(anim);//callig the anim func
     glutKeyboardFunc (Keyboard);
+    glutReshapeFunc(reshape);       // Register callback handler for window re-size event
     initGL();// Our own OpenGL initialization
     glutMainLoop();                 // Enter the infinite event-processing loop
     return 0;
