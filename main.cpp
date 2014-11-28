@@ -254,7 +254,7 @@ void sphere(){
     glPushMatrix();
     // cout << sphX << " " << sphY << endl;
     // cout << "x axis " << (-0.5 + sphX) << endl;
-    glTranslatef(-0.5 + sphX, 5.5 + sphY, -0.2 - sphZ);
+    glTranslatef(6 + sphX, 5.5 + sphY, -0.2 - sphZ);
     glColor3f(0,0,0);
     glScalef(0.5, 0.5, 0);
     glutWireSphere(0.3,20,20);
