@@ -462,7 +462,7 @@ void reshape(GLsizei width, GLsizei height) {
 }
 
 void anim(void) {
-	for(int i=0;i<100000000;i++);
+    for(int i=0;i<19999999;i++);
 	// sphX += 1;
 	// sphY += 1;
 	
