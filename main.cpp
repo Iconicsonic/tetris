@@ -252,6 +252,7 @@ void sphere(void);
 double sphX;
 double sphY;
 double sphZ;
+bool end;
 double startingX, startingY, startingZ;
 int signX, signY, sX, sY;
 double speed;
@@ -550,7 +551,6 @@ void reshape(GLsizei width, GLsizei height) {
 void anim(void) {
     // if(!repeatScene){
         SetupLights();
-        
         glViewport(0, 0, windowWidth, windowHeight);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
@@ -649,19 +649,47 @@ void anim(void) {
                 speed += 0.0001/divide;
             }else {
             	repeatScene = true;
+            	start = false;
+            	end = true;
             }
-            gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
-            glutPostRedisplay();
-
+            
     }
+    gluPerspective(angle, (float)windowWidth/(float)windowHeight, 0.1f, 50.0f);
+    glutPostRedisplay();
 }
 void Keyboard(unsigned char key, int x, int y)
 {
-    switch (key)
-    {
+    switch (key) {
+    	case 'x':
+    		if(!start) {
+    			end = false;
+	    		start = false;
+	    		theta  = 0.25*(3.141593f / 180);
+				cx = 0.0;
+				cy = 12.0;
+				cz = 0.0;
+	    		sphX = sphY = sphZ = speed = 0;
+		        angle = 120;
+			    score = 0;
+			    repeatScene = false;
+			    madfa3DirecH = madfa3DircV = signX = signY = 0;
+			    sphZ = 0;
+			    speed = 0;
+			    startingX = 6;
+			    startingY = 5.5;
+			    startingZ = -0.2;
+			}
+   			break;
         case 's':
-            start = true;
-            divide = 1;
+        	if(!start && !end) {
+	            start = true;
+	            divide = 1;
+	            sphX = sphY = sphZ = speed = 0;
+		        angle = 120;
+		        score = 0;
+		        repeatScene = false;
+		        madfa3DirecH = madfa3DircV = signX = signY = 0;
+		    }
             break;
         case 'r':
             rotate = true;
@@ -674,10 +702,9 @@ void Keyboard(unsigned char key, int x, int y)
 	            sphX = sphY = sphZ = speed = 0;
 	            angle = 120;
 	            divide = 7;
+	            score = 0;
         	}
             break;
-        case 'q':
-            repeatScene = false;
     }
 }
 
@@ -716,6 +743,7 @@ int main(int argc, char** argv) {
     startingX = 6;
     startingY = 5.5;
     startingZ = -0.2 ;
+    end = 0;
     glutInit(&argc, argv);            // Initialize GLUT
     glutInitDisplayMode(GLUT_DOUBLE); // Enable double buffered mode
     glutInitWindowSize(680, 350);   // Set the window's initial width & height
